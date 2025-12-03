@@ -1,0 +1,64 @@
+import React, { useState, useEffect } from 'react';
+import { Search, Calendar, Clock } from 'lucide-react';
+
+interface Post {
+  id: string;
+  title: string;
+  excerpt: string;
+  date: string;
+  readTime: string;
+}
+
+export default function HomePage() {
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [searchTerm, setSearchTerm] = useState('');
+
+  useEffect(() => {
+    fetch('/api/posts')
+      .then(res => res.json())
+      .then(data => setPosts(data));
+  }, []);
+
+  const filteredPosts = posts.filter(post =>
+    post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    post.excerpt.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  return (
+    <div className="min-h-screen bg-white dark:bg-gray-900">
+      <div className="max-w-4xl mx-auto px-4 py-8">
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-8">Recent Posts</h1>
+        
+        <div className="relative mb-8">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+          <input
+            type="text"
+            placeholder="Search posts..."
+            className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
+
+        <div className="space-y-6">
+          {filteredPosts.map(post => (
+            <article key={post.id} className="border border-gray-200 dark:border-gray-700 rounded-lg p-6 hover:shadow-lg transition-shadow">
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">{post.title}</h2>
+              <p className="text-gray-600 dark:text-gray-300 mb-4">{post.excerpt}</p>
+              <div className="flex items-center gap-4 text-sm text-gray-500">
+                <span className="flex items-center gap-1">
+                  <Calendar size={16} />
+                  {post.date}
+                </span>
+                <span className="flex items-center gap-1">
+                  <Clock size={16} />
+                  {post.readTime}
+                </span>
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}

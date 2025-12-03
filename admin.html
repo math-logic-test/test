@@ -1,0 +1,108 @@
+import { useState, useEffect } from 'react'
+import { useRouter } from 'next/router'
+import { createPost, updatePost, getPost } from '@/lib/api'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { z } from 'zod'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
+import { Switch } from '@/components/ui/switch'
+import { Label } from '@/components/ui/label'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { useToast } from '@/components/ui/use-toast'
+
+const schema = z.object({
+  title: z.string().min(1, 'Title is required'),
+  slug: z.string().min(1, 'Slug is required'),
+  content: z.string().min(1, 'Content is required'),
+  published: z.boolean()
+})
+
+type FormData = z.infer<typeof schema>
+
+export default function AdminDashboard() {
+  const router = useRouter()
+  const { toast } = useToast()
+  const [isEditing, setIsEditing] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+
+  const form = useForm<FormData>({
+    resolver: zodResolver(schema),
+    defaultValues: {
+      title: '',
+      slug: '',
+      content: '',
+      published: false
+    }
+  })
+
+  const handleSubmit = async (data: FormData) => {
+    setIsLoading(true)
+    try {
+      if (isEditing) {
+        await updatePost(data)
+        toast({ title: 'Post updated successfully' })
+      } else {
+        await createPost(data)
+        toast({ title: 'Post created successfully' })
+      }
+      router.push('/')
+    } catch (error) {
+      toast({ title: 'Error creating/updating post', variant: 'destructive' })
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  return (
+    <div className="min-h-screen bg-background">
+      <div className="max-w-4xl mx-auto py-8 px-4">
+        <h1 className="text-3xl font-bold mb-8">Admin Dashboard</h1>
+        
+        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
+          <div>
+            <Label htmlFor="title">Title</Label>
+            <Input
+              id="title"
+              {...form.register('title')}
+              placeholder="Enter post title"
+            />
+          </div>
+          
+          <div>
+            <Label htmlFor="slug">Slug</Label>
+            <Input
+              id="slug"
+              {...form.register('slug')}
+              placeholder="Enter post slug"
+            />
+          </div>
+          
+          <div>
+            <Label htmlFor="content">Content</Label>
+            <Textarea
+              id="content"
+              {...form.register('content')}
+              placeholder="Enter post content"
+              rows={10}
+            />
+          </div>
+          
+          <div className="flex items-center space-x-2">
+            <Switch
+              id="published"
+              {...form.register('published')}
+            />
+            <Label htmlFor="published">Published</Label>
+          </div>
+          
+          <Button type="submit" disabled={isLoading}>
+            {isEditing ? 'Update Post' : 'Create Post'}
+          </Button>
+        </form>
+      </div>
+    </div>
+  )
+}
