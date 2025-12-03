@@ -1,0 +1,30 @@
+<svg viewBox="0 0 1200 600" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="grad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0d0d0d"/>
+      <stop offset="100%" stop-color="#1a1a1a"/>
+    </linearGradient>
+    <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000000" flood-opacity="0.5"/>
+    </filter>
+  </defs>
+
+  <rect width="100%" height="100%" fill="url(#grad)"/>
+
+  <g transform="translate(100, 100)">
+    <circle cx="0" cy="0" r="50" fill="#00d4ff" opacity="0.8"/>
+    <circle cx="0" cy="0" r="50" fill="none" stroke="#00d4ff" stroke-width="2" stroke-dasharray="5,5"/>
+  </g>
+
+  <g transform="translate(1000, 100)">
+    <circle cx="0" cy="0" r="50" fill="#00d4ff" opacity="0.8"/>
+    <circle cx="0" cy="0" r="50" fill="none" stroke="#00d4ff" stroke-width="2" stroke-dasharray="5,5"/>
+  </g>
+
+  <g transform="translate(600, 300)">
+    <circle cx="0" cy="0" r="50" fill="#00d4ff" opacity="0.8"/>
+    <circle cx="0" cy="0" r="50" fill="none" stroke="#00d4ff" stroke-width="2" stroke-dasharray="5,5"/>
+  </g>
+
+  <text x="600" y="500" text-anchor="middle" font-size="24" fill="#ffffff" font-family="system-ui, sans-serif">Modern. Clean. Dark-mode friendly.</text>
+</svg>
